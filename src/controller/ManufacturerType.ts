@@ -5,7 +5,7 @@ export type Location = {
 }
 
 export type Manufacturer = {
-  id: number;
+  id: string;
   name: string;
   location: Location;
 }
