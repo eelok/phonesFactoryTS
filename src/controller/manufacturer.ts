@@ -1,34 +1,45 @@
 import express, {Express, Request, Response} from 'express';
 import {Manufacturer, Location} from './ManufacturerType';
-import {location001, location002, lg, siemens} from '../repository';
-import {ManufacturerRepository} from '../service/ManufacturerRepository';
 import {statusCodes} from '../statusCodes';
 
-const manufacturerRepo: ManufacturerRepository = new ManufacturerRepository();
-
+let storage: Record<string, Manufacturer> = {};
 
 export const createManufacturer = (req: Request, res: Response): void => {
-    let data: Manufacturer = req.body;
-    const {name} = data;
+    let manufacturer: Manufacturer = req.body;
+    if(!manufacturer || typeof manufacturer !== "object"){
+        res.status(statusCodes.BAD_REQUEST).send('Invalid manufacturer object');
+        return;
+    }
+    let {name} = manufacturer;
     if (!name || !name.trim()) {
         res.status(statusCodes.BAD_REQUEST).send('Manufacturer name is required');
         return;
     }
-    try {
-        manufacturerRepo.saveManufacturer(data);
-    } catch (err) {
-        res.status(statusCodes.BAD_REQUEST).send('err');
+    name = name.trim().toLowerCase();
+    if(Object.keys(storage).length === 0) {
+        storage[name] = manufacturer;
+        res.send(statusCodes.CREATED).send(manufacturer);
         return;
     }
-    res.send("Data Received: " + JSON.stringify(data));
+    if(storage[name]){
+        res.status(statusCodes.BAD_REQUEST).send('Manufacturer already exists');
+        return;
+    }
+    storage[name] = manufacturer;
+    res.send(statusCodes.CREATED).send(manufacturer);
 }
 
-export const getManufacturerByID = (req: Request, res: Response) => {
-    const manufacturerID: number = +req.params.id;
-    if (manufacturerID === 1) {
-        return res.send(lg);
+export const getManufacturerByName = (req: Request, res: Response): void => {
+    let name: string = req.params.name;
+    if(!name || !name.trim().toLowerCase()){
+        res.send(statusCodes.BAD_REQUEST).send('name is required');
+        return;
     }
-    if (manufacturerID === 2) {
-        return res.send(siemens);
+    name = name.trim().toLowerCase()
+    const manufacturer = storage[name];
+    if(!manufacturer){
+        res.send(statusCodes.BAD_REQUEST).send('Manufacturer with the name ${name} does not exists');
+        return;
     }
+    res.status(statusCodes.OK).send(manufacturer);
 }

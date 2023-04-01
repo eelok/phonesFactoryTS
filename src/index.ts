@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { send } from 'process';
-import { createManufacturer, getManufacturerByID } from './controller/manufacturer';
+import { createManufacturer, getManufacturerByName } from './controller/manufacturer';
 
 
 const bodyParser = require('body-parser')
@@ -20,7 +20,7 @@ app.get('/home', (req: Request, res: Response) => {
 
 app.post('/create', createManufacturer);
 
-app.get('/:id', getManufacturerByID);
+app.get('/:name', getManufacturerByName);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
