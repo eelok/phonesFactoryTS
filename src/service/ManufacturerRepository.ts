@@ -28,11 +28,4 @@ export class ManufacturerRepository {
             }
         }
     };
-
-    printAllManufacturers(storage: Record<string, Manufacturer>): void {
-        let counter: number = 0;
-        for (const key in storage) {
-            console.log(`Manufacturer ${++counter}: ${storage[key]}`);
-        }
-    }
 }

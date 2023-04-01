@@ -10,9 +10,8 @@ const manufacturerRepo: ManufacturerRepository = new ManufacturerRepository();
 export const createManufacturer = (req: Request, res: Response): void => {
     let data: Manufacturer = req.body;
     const {name} = data;
-// todo
-    if (!name.trim()) {
-        res.status(statusCodes.BAD_REQUEST).send('Status: Bad Request');
+    if (!name || !name.trim()) {
+        res.status(statusCodes.BAD_REQUEST).send('Manufacturer name is required');
         return;
     }
     try {
