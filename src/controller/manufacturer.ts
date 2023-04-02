@@ -47,3 +47,23 @@ export const getManufacturerByName = (req: Request, res: Response): void => {
 export const getAllManufacturers = (req: Request, res: Response): void  => {
     res.status(statusCodes.OK).send(storage);
 }
+/// todo почему висит
+export const deleteManufacturerByName = (req: Request, res: Response): void => {
+    let manufacturerName: string = req.body.name;
+    if (!manufacturerName || !manufacturerName.trim()) {
+        res.status(statusCodes.BAD_REQUEST).send('Manufacturer name is required');
+        return;
+    }
+    manufacturerName = manufacturerName.trim().toLowerCase();
+    const manufacturer =  storage[manufacturerName];
+    if(!manufacturer){
+        res.status(statusCodes.NOT_FOUND).send(`Manufacturer with a name ${manufacturerName} was not found`);
+        return;
+    }
+    if(!delete storage[manufacturerName]){
+        res.status(statusCodes.INTERNAL_SERVER_ERROR);
+        return;
+    }
+    res.status(statusCodes.OK);
+    return;
+}
