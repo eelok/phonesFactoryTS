@@ -4,9 +4,9 @@ import {
   createManufacturer,
   deleteManufacturerByName,
   getAllManufacturers,
-  getManufacturerByName
+  getManufacturerByName,
+  updateManufacturer
 } from './controller/manufacturer';
-
 
 const bodyParser = require('body-parser')
 
@@ -18,17 +18,15 @@ const port = process.env.PORT;
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/home', (req: Request, res: Response) => {
-  res.send('fackkkkk HELLO Express + TypeScript Server');
-});
-
 app.post('/create', createManufacturer);
-
-app.get('/:name', getManufacturerByName);
 
 app.get('/', getAllManufacturers);
 
+app.get('/:name', getManufacturerByName);
+
 app.delete('/:name', deleteManufacturerByName);
+
+app.put('/:name', updateManufacturer);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

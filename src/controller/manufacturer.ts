@@ -18,7 +18,7 @@ export const createManufacturer = (req: Request, res: Response): void => {
     name = name.trim().toLowerCase();
     if(Object.keys(storage).length === 0) {
         storage[name] = manufacturer;
-        res.send(statusCodes.CREATED).send(manufacturer);
+        res.status(statusCodes.CREATED).send(manufacturer);
         return;
     }
     if(storage[name]){
@@ -26,13 +26,13 @@ export const createManufacturer = (req: Request, res: Response): void => {
         return;
     }
     storage[name] = manufacturer;
-    res.send(statusCodes.CREATED).send(manufacturer);
+    res.status(statusCodes.CREATED).send(manufacturer);
 }
 
 export const getManufacturerByName = (req: Request, res: Response): void => {
     let name: string = req.params.name;
     if(!name || !name.trim().toLowerCase()){
-        res.send(statusCodes.BAD_REQUEST).send('name is required');
+        res.status(statusCodes.BAD_REQUEST).send('name is required');
         return;
     }
     name = name.trim().toLowerCase()
@@ -47,7 +47,7 @@ export const getManufacturerByName = (req: Request, res: Response): void => {
 export const getAllManufacturers = (req: Request, res: Response): void  => {
     res.status(statusCodes.OK).send(storage);
 }
-/// todo почему висит
+
 export const deleteManufacturerByName = (req: Request, res: Response): void => {
     let manufacturerName: string = req.body.name;
     if (!manufacturerName || !manufacturerName.trim()) {
@@ -61,9 +61,31 @@ export const deleteManufacturerByName = (req: Request, res: Response): void => {
         return;
     }
     if(!delete storage[manufacturerName]){
-        res.status(statusCodes.INTERNAL_SERVER_ERROR);
+        res.status(statusCodes.INTERNAL_SERVER_ERROR).send();
         return;
     }
-    res.status(statusCodes.OK);
+    res.status(statusCodes.OK).send();
     return;
+}
+//todo wip
+export const updateManufacturer = (req: Request, res: Response): void => {
+    let {name, location: {country, city}}: Manufacturer = req.body;
+    if (!name || !name.trim()) {
+        res.status(statusCodes.BAD_REQUEST).send('Manufacturer name is required');
+        return;
+    }
+    name = name.trim().toLowerCase()
+    let foundManufacturer = storage[name];
+    if(!foundManufacturer){
+        res.status(statusCodes.NOT_FOUND).send(`Manufacturer with a name ${name} was not found`);
+        return;
+    }
+    if(country && country.trim()){
+        country = country.toLowerCase();
+        foundManufacturer.location.country = country;
+    }
+    if(city && city.trim()){
+        city = city.toLowerCase();
+        foundManufacturer.location.city = city;
+    }
 }
