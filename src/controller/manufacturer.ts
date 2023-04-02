@@ -3,7 +3,7 @@ import {Manufacturer, Location} from './ManufacturerType';
 import {statusCodes} from '../statusCodes';
 
 let storage: Record<string, Manufacturer> = {};
-
+//todo write unit test when manufacturer is null
 export const createManufacturer = (req: Request, res: Response): void => {
     let manufacturer: Manufacturer = req.body;
     if(!manufacturer || typeof manufacturer !== "object"){
@@ -38,8 +38,12 @@ export const getManufacturerByName = (req: Request, res: Response): void => {
     name = name.trim().toLowerCase()
     const manufacturer = storage[name];
     if(!manufacturer){
-        res.send(statusCodes.BAD_REQUEST).send('Manufacturer with the name ${name} does not exists');
+        res.status(statusCodes.BAD_REQUEST).send('Manufacturer with the name ${name} does not exists');
         return;
     }
     res.status(statusCodes.OK).send(manufacturer);
+}
+
+export const getAllManufacturers = (req: Request, res: Response): void  => {
+    res.status(statusCodes.OK).send(storage);
 }

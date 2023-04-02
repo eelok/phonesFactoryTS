@@ -11,13 +11,11 @@ export const location002: Location = {
 }
 
 export const lg: Manufacturer = {
-  id: "1",
   name: "LG",
   location: location001,
 }
 
 export const siemens: Manufacturer = {
-  id: "2",
   name: "Siemens",
   location: location002
 }
